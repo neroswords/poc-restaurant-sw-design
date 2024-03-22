@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food List with Order List</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<style>
+    .order-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin-bottom: 50px;
+    }
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .order-item button {
+        margin-left: 10px;
+    }
+    #confirmOrderBtn {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+</style>
+</head>
+<body>
+
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="errorModalLabel">Error</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Modal content goes here -->
+              Cannot add more than tem items
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmModalLabel">Confirm</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Modal content goes here -->
+              Confirm all order?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="onClickConfirmOrder()">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Food Types</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#" onclick="onClickFilterFood(this,'all')">All</a>
+                </li>
+                <% tags.forEach(function(tag, idx) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="onClickFilterFood(this,'<%= tag.name %>')"><%= tag.name %></a>
+                </li>
+                <% }); %>
+                <!-- Add more food types here -->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-3">
+    <div class="row">
+        <!-- Food List Column -->
+        <div class="col-md-8">
+            <h2>Food List</h2>
+            <div class="row row-cols-1 row-cols-md-4 g-4" id="food-list">
+                <!-- Food Cards -->
+            </div>
+        </div>
+        
+        <!-- Order List Column -->
+        <div class="col-md-4">
+            <h2>Order List</h2>
+            <ul class="order-list">
+                <!-- Order Items will be dynamically added here -->
+            </ul>
+            <div>
+                <button class="btn btn-primary" id="confirmOrderBtn" onclick="showConfirmModal()">confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const foodlist = JSON.parse('<%- JSON.stringify(menu) %>');
+
+    const foodListElement = document.getElementById("food-list")
+    while (foodListElement.firstChild) {
+        foodListElement.firstChild.remove()
+    }
+    foodlist.forEach(function(food) {
+        console.log(food);
+        updateFoodList('all', food);
+    });
+
+    function onClickFilterFood(elem, foodType){
+        const foodListElement = document.getElementById("food-list")
+        while (foodListElement.firstChild) {
+            foodListElement.firstChild.remove()
+        }
+        document.getElementsByClassName("active")[0].className = "nav-link";
+        elem.className = "nav-link active";
+        foodlist.forEach(function(food) {
+            updateFoodList(foodType, food);
+        });
+    }
+
+    function updateFoodList(foodType, food) {
+        var foodCard = document.createElement('div');
+        foodCard.innerHTML = `
+        <div class="col">
+            <div class="card food-card" data-name="${food.name}" onclick="addToOrderList('${food.name}', '${food.id}')">
+                <img src="https://via.placeholder.com/200" class="card-img-top" alt="${food.name}">
+                <div class="card-body">
+                    <h5 class="card-title">${food.name}</h5>
+                    <p class="card-text">$${food.price}</p>
+                </div>
+            </div>
+        </div>
+        `;
+        
+        if (foodType == 'all' || food.tags.some(value => { return value.name == foodType })) {
+            document.getElementById("food-list").appendChild(foodCard); 
+        }
+    }
+
+    function showErrorModal() {
+        var myModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        myModal.show();
+    }
+
+    function showConfirmModal() {
+        var myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        myModal.show();
+    }
+
+    function onClickConfirmOrder(){
+        var orderList = document.getElementsByClassName("hidden-order-id");
+        var orderId = []
+        Array.from(orderList).forEach((order) => {
+            // Do stuff here
+            orderId.push(order.value);
+        });
+        postAddOrderToTableNumber(orderId);
+    }
+
+    function postAddOrderToTableNumber(orders){
+        fetch("/api/v1/table/<%= table.tableNumber %>/addOrder", {
+        method: 'POST',
+        body: JSON.stringify({orders:orders}),
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        }).then(res => res.json())
+        .then(res => {
+            console.log(res);
+            var orderList = document.querySelector(".order-list");
+            while (orderList.firstChild) {
+                orderList.firstChild.remove();
+            }
+        })
+        .catch((err) => console.error(`Fetch problem: ${err.message}`));
+    }
+
+    function getMenu(){
+        fetch(`/api/v1/menu/`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        }).then(res => res.json())
+        .then(res => {
+            console.log(res);
+            var orderList = document.querySelector(".order-list");
+            while (orderList.firstChild) {
+                orderList.firstChild.remove();
+            }
+        })
+        .catch((err) => console.error(`Fetch problem: ${err.message}`));
+    }
+
+    // Function to add item to the order list
+    function addToOrderList(name, id) {
+        var orderList = document.querySelector(".order-list");
+        if (orderList.childElementCount < 10){
+            var li = document.createElement("li");
+            li.className = "order-item";
+            li.innerHTML = `
+            <input type="hidden" "display: none;" class="hidden-order-id" value="${id}"/>
+            <span>${name}</span>
+            `;
+            
+            // Add remove button
+            var removeBtn = document.createElement("button");
+            removeBtn.className = "btn btn-danger btn-sm ms-2";
+            removeBtn.textContent = "Remove";
+            removeBtn.addEventListener("click", function() {
+                orderList.removeChild(li);
+            });
+            li.appendChild(removeBtn);
+
+            orderList.appendChild(li);
+            return;
+        }
+        showErrorModal();
+    }
+</script>
+</body>
+</html>

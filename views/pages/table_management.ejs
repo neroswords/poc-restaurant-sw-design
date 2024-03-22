@@ -1,0 +1,209 @@
+<!-- index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Table List</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<style>
+    .card {
+        cursor: pointer;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    .active {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <% tables.forEach(function(table, idx) { %>
+            <div class="col">
+                <!-- data-bs-toggle="modal" data-bs-target="#activeModal" onclick="onClickTable(this, 'table<%= table.tableNumber %>')"-->
+                <div class="card" data-bs-toggle="modal" data-bs-target="#activeModal" data-bs-whatever="<%= table.tableNumber %>" id="card-table<%= table.tableNumber %>"  <% /* eslint-disable css-propertyvalueexpected */ %> style="background-color: <%= table.status === 'active' ? '#28a745' : 'transparent' %>">
+                    <div class="card-body <%= table.status === 'active' ? 'active' : '' %>" id="table<%= table.tableNumber %>">
+                        Table <%= table.tableNumber %>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<div class="modal fade" id="activeModal" tabindex="-1" aria-labelledby="activeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activeModalLabel">Active</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button class="btn btn-primary" id="confirmOrderBtn" onclick="postActiveTable()">confirm</button> -->
+                <button class="btn btn-primary" id="confirmOrderBtn" data-bs-dismiss="modal" value="">confirm</button>
+                <!-- Add any additional buttons here if needed -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade" id="inactiveModal" tabindex="-1" aria-labelledby="inactiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inactiveModalLabel">Inactive</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Modal Content
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                Add any additional buttons here if needed
+            </div>
+        </div>
+    </div>
+</div> -->
+<script>
+
+    function makeDistinctByFoodIdWithCounts(arr) {
+        const distinctItemsWithCounts = arr.reduce((acc, curr) => {
+            const foundIndex = acc.findIndex(item => item.food.id === curr.food.id);
+            if (foundIndex !== -1) {
+                acc[foundIndex].count++;
+            } else {
+                acc.push({ food: curr.food, count: 1 });
+            }
+            return acc;
+        }, []);
+        return distinctItemsWithCounts;
+    }
+
+    const activeModal = document.getElementById('activeModal')
+    if (activeModal) {
+        activeModal.addEventListener('show.bs.modal', event => {
+        // Button that triggered the modal
+        const button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        const tableNumber = button.getAttribute('data-bs-whatever')
+        // If necessary, you could initiate an Ajax request here
+        // and then do the updating in a callback.
+       
+        
+        // Update the modal's content.
+        const modalTitle = activeModal.querySelector('.modal-title')
+        const table = document.getElementById(`table${tableNumber}`);
+        const modalBodyInput = activeModal.querySelector('.modal-body');
+        const modalConfirm = document.getElementById('confirmOrderBtn');
+        modalConfirm.value = tableNumber;
+        if(table.className.includes("active")){
+            modalConfirm.removeEventListener('click', postActiveTable);
+            modalConfirm.addEventListener('click', postCloseTable);
+            getOrderFromTableNumber(tableNumber).then((tableOrders)=>{
+                if(tableOrders.data){
+                    const modalTitle = activeModal.querySelector('.modal-title');
+                    const modalBodyInput = activeModal.querySelector('.modal-body');
+                    const distinctArrayWithCounts = makeDistinctByFoodIdWithCounts(tableOrders.data.foodOrder);
+                    var totalPrice = 0;
+                    var htmlBody = "";
+                    distinctArrayWithCounts.forEach(element => {
+                        totalPrice += element.food.price * element.count;
+                        htmlBody += `<p>${element.food.name} * ${element.count}</p>`;
+                    });
+                    htmlBody += `<p>total : ${totalPrice.toFixed(2)}</p>`;
+                    htmlBody += `<p style="text-align: right">*กด confirm เพื่อยืนยันการจ่ายเงินและปิดโต๊ะ</p>`;
+                } else {
+                    htmlBody = "no Order";
+                }
+                modalBodyInput.innerHTML = htmlBody;
+            });
+        } else {
+            modalConfirm.removeEventListener('click', postCloseTable);
+            modalConfirm.addEventListener('click', postActiveTable);
+            modalBodyInput.innerHTML = 'Want to Activate this Table?';
+        }
+        modalTitle.textContent = `Table ${tableNumber}`
+        
+    })
+    }
+
+    function onClickTable(elem, id){
+        const table = document.getElementById(id);
+        console.log(table.className);
+        if(table.className.includes("active")){
+            showactiveModal()
+        } else {
+            showInactiveModal()
+        }
+    }
+
+    function getOrderFromTableNumber(tableNumber){
+        return fetch(`/api/v1/table/${tableNumber}`, {
+        method: 'GET',
+        }).then(res => res.json())
+        .then(res => {
+            return res;
+        })
+        .catch((err) => console.error(`Fetch problem: ${err.message}`));
+    }
+
+    function postCloseTable(){
+        fetch(`/api/v1/table/${this.value}/close`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        }).then(res => res.json())
+        .then(res => {
+            const table = document.getElementById(`table${this.value}`);
+            const card = document.getElementById(`card-table${this.value}`);
+            card.style.backgroundColor = 'transparent';
+            table.className = 'card-body';
+        })
+        .catch((err) => console.error(`Fetch problem: ${err.message}`));
+    }
+
+    function postActiveTable(){
+        fetch(`/api/v1/table/${this.value}/activate`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        }).then(res => res.json())
+        .then(res => {
+            const table = document.getElementById(`table${this.value}`);
+            const card = document.getElementById(`card-table${this.value}`);
+            card.style.backgroundColor = '#28a745';
+            table.className = 'card-body active';
+        })
+        .catch((err) => console.error(`Fetch problem: ${err.message}`));
+    }
+    
+    function showactiveModal() {
+        var modalContainer = document.getElementById('activeModal');
+        var myModal = new bootstrap.Modal(modalContainer);
+        myModal.show();
+    }
+    function showInactiveModal() {
+        var modalContainer = document.getElementById('inactiveModal');
+        var myModal = new bootstrap.Modal(document.getElementById('inactiveModal'));
+        myModal.show();
+    }
+</script>
+</body>
+</html>
