@@ -10,6 +10,11 @@ const MenuSchema=new mongoose.Schema({
         type : Number,
         required:[true, 'Please add a price']
     },
+    food_type : {
+        type : String,
+        required : true,
+        enum: ['normal','order_only'],
+    },
     createdAt:{
         type: Date,
         default:Date.now

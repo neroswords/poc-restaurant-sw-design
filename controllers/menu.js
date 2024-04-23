@@ -31,12 +31,13 @@ exports.createTag= async(req, res, next) => {
 //@access       Private
 exports.createMenu= async(req, res, next) => {
     try {
-        const { name, price, tags} = req.body;
+        const { name, price, tags, food_type} = req.body;
         const objectIdTagArray = tags.map(tagId => new mongoose.Types.ObjectId(tagId));
         const menu = await Menu.create({
             name : name,
             tags : objectIdTagArray,
             price : price,
+            food_type : food_type
         });
         res.status(201).json({success: true, data: menu});
     } catch (err) {

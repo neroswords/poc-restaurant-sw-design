@@ -1,23 +1,26 @@
 const mongoose = require('mongoose');
 
-const OrderSchema=new mongoose.Schema({
+const SessionBillSchema=new mongoose.Schema({
     user : {
         type : mongoose.Schema.ObjectId,
         ref : 'User',
         required : true
     },
-    foodOrder:[{
-        food : {
+    normalOrder:[{
+            type : mongoose.Schema.ObjectId,
+            ref : 'Plate',
+            required : true
+    }],
+    speacailOrder : [{
             type : mongoose.Schema.ObjectId,
             ref : 'Menu',
             required : true
-        },
-        status : {
-            type:String,
-            enum: ['todo','doing', 'done', 'serve', 'served', 'cancelled'],
-            default: 'todo'
-        }
     }],
+    total : {
+        type : Number,
+        required : true,
+        default : 0
+    },
     status : {
         type:String,
         enum: ['on_going', 'paid'],
@@ -32,4 +35,4 @@ const OrderSchema=new mongoose.Schema({
     toObject: {virtuals: true},
 });
 
-module.exports = mongoose.model('Order',OrderSchema);
+module.exports = mongoose.model('SessionBill',SessionBillSchema);
