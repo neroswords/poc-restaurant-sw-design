@@ -152,7 +152,7 @@ exports.getAllOrderFromTableNumber= async(req, res, next) => {
     const table = await Table.findOne({tableNumber : req.params.tableNumber});
     const order = await Order.findOne({user: table.user._id, status: 'on_going'}).populate({
         path: 'foodOrder',
-        populate: { path: 'food' , select :"name tags price"}
+        populate: { path: 'food' , select :"name tags price img"}
     });;
     // if (order && order.foodOrder && order.foodOrder.length > 0){
     //     console.log('cal');
