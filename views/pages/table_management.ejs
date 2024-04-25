@@ -67,7 +67,7 @@
             <div class="modal-body" style="padding: 0px">
                 <!-- Modal Content -->
             </div></div></div>
-            <div style="border: #EEEEEE 1px;background-color: #fff;border-top-style: solid;padding: 10px;"><p style="margin-bottom:4px;font-size: 20px;text-align: right;" id="totalPrice" ></p><p style="text-align: right; margin-bottom: 4px; color: #808080;">* กดยืนยันเพื่อยืนยันการจ่ายเงินและปิดโต๊ะ</p></div>
+            <div style="border: #EEEEEE 1px;background-color: #fff;border-top-style: solid;padding: 10px;"><p style="margin-bottom:4px;font-size: 20px;text-align: right;" id="totalPrice" ></p><p id="remark" style="text-align: right; margin-bottom: 4px; color: #808080;">* กดยืนยันเพื่อยืนยันการจ่ายเงินและปิดโต๊ะ</p></div>
             <div class="modal-footer">
                 <button style="border-color: #D9D9D9;margin:0;width: 30%;height: 45px;color: #696969;background: transparent;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                 <!-- <button class="btn btn-primary" id="confirmOrderBtn" onclick="postActiveTable()">confirm</button> -->
@@ -130,6 +130,7 @@
         if(table.className.includes("active")){
             modalConfirm.removeEventListener('click', postActiveTable);
             modalConfirm.addEventListener('click', postCloseTable);
+            activeModal.querySelector('#confirmOrderBtn').innerHTML = 'ยืนยัน';
             getOrderFromTableNumber(tableNumber).then((tableOrders)=>{
                 console.log('tableOrders', tableOrders)
                 if(tableOrders.data){
@@ -145,7 +146,7 @@
                     });
                     totalPriceText.innerHTML = `ราคารวมทั้งหมด ${totalPrice.toFixed(2)} บาท`;
                     // htmlBody += `<p>ราคารวมทั้งหมด ${totalPrice.toFixed(2)} บาท</p>`;
-                    // activeModal.querySelector('#rema').innerHTML = `<p style="text-align: right">* กด confirm เพื่อยืนยันการจ่ายเงินและปิดโต๊ะ</p>`;
+                    activeModal.querySelector('#remark').innerHTML = `<p style="text-align: right">* กดยืนยันเพื่อยืนยันการจ่ายเงินและปิดโต๊ะ</p>`;
                 } else {
                     htmlBody = "<div style='margin-bottom: 50px;margin-top: 50px;text-align: center;'><p style='font-size:40px;margin-bottom: 4px;'>🍽</p><p style='color:#b2b2b2'>ไม่มีรายการอาหาร</p></div>";
                 }
@@ -154,7 +155,10 @@
         } else {
             modalConfirm.removeEventListener('click', postCloseTable);
             modalConfirm.addEventListener('click', postActiveTable);
-            modalBodyInput.innerHTML = 'Want to Activate this Table?';
+            modalBodyInput.innerHTML = "<div style='margin-bottom: 50px;margin-top: 50px;text-align: center;'><p style='font-size:40px;margin-bottom: 4px;'>🪑</p><p style='color:#b2b2b2'>โต๊ะว่าง</p></div>";
+            activeModal.querySelector('#confirmOrderBtn').innerHTML = 'ยืนยัน เปิดโต๊ะใหม่';
+            activeModal.querySelector('#remark').innerHTML = `<p style="text-align: right">* กดยืนยัน เพื่อเปิดโต๊ะนี้</p>`;
+            activeModal.querySelector('#totalPrice').innerHTML = '';
         }
         modalTitle.textContent = `โต๊ะ ${tableNumber}`
         
