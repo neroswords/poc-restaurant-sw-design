@@ -113,6 +113,7 @@
         {
           id: 1,
           title: "ก๋วยเตี๋ยวผัด",
+          table: 1,
           amount: "1",
           img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
           status: "todo",
@@ -120,6 +121,7 @@
         {
           id: 2,
           title: "ก๋วยเตี๋ยวผัด",
+          table: 5,
           amount: "1",
           img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
           status: "todo",
@@ -127,6 +129,7 @@
         {
           id: 3,
           title: "ก๋วยเตี๋ยวผัด",
+          table: 4,
           amount: "1",
           img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
           status: "inProgress",
@@ -134,6 +137,7 @@
         {
           id: 4,
           title: "กุ้งทอด",
+          table: 4,
           amount: "1",
           img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
           status: "inProgress",
@@ -141,6 +145,7 @@
         {
           id: 5,
           title: "กุ้งทอด",
+          table: 4,
           amount: "2",
           img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
           status: "inProgress",
@@ -148,6 +153,7 @@
         {
           id: 6,
           title: "หมูทอด",
+          table: 1,
           amount: "1",
           img: "https://poshjournal.com/wp-content/uploads/2020/05/tonkatsu-japanese-pork-cutlet-2.jpg",
           status: "done",
@@ -155,6 +161,7 @@
         {
           id: 7,
           title: "ก๋วยเตี๋ยวผัด",
+          table: 1,
           amount: "1",
           img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
           status: "done",
@@ -162,6 +169,7 @@
         {
           id: 8,
           title: "ก๋วยเตี๋ยวผัด",
+          table: 8,
           amount: "2",
           img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
           status: "done",
@@ -169,6 +177,7 @@
         {
           id: 9,
           title: "กุ้งทอด",
+          table: 8,
           amount: "1",
           img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
           status: "done",
@@ -189,9 +198,9 @@
         });
         taskCard.innerHTML = `<div style="display:flex;"><img style="width: 45px;height:45px;border-radius: 12px;aspect-ratio: 1 / 1;object-fit: cover;margin-right:12px" src="${
           task.img ?? `https://via.placeholder.com/200`
-        }"><div style="flex:1;display:flex;justify-content: space-between;"><p>${
+        }"><div style="flex:1;display:flex;justify-content: space-between;"><p style="margin-bottom: 4px">${
           task.title
-        }</p><p>จำนวน ${task.amount}</p></div></div></div>`;
+        }</br>โต๊ะ ${task.table}</p><p>จำนวน ${task.amount}</p></div></div></div>`;
 
         var columnId;
         switch (task.status) {
