@@ -57,6 +57,55 @@
       font-family: 'Sarabun', sans-serif;
     "
   >
+    <div
+      class="modal fade"
+      id="confirmModal"
+      tabindex="-1"
+      aria-labelledby="confirmModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmModalLabel">ยืนยัน</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Modal content goes here -->
+            ยืนยันการยกเลิกรายการอาหาร
+            <input style="display: none;" id="cancelTaskValue" value=""/>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              ยกเลิก
+            </button>
+            <button
+              style="
+                background-color: #ee8164;
+                border: 0px;
+                margin: 0;
+                margin-left: 8px;
+              "
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              onclick="onClickConfirmCancelOrder()"
+            >
+              ยืนยัน
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container">
       <div
         style="
@@ -187,7 +236,17 @@
       tasks.forEach(function (task) {
         addTaskToBoard(task);
       });
-
+      function onClickConfirmCancelOrder() {
+        const id = document.getElementById('cancelTaskValue').value
+        document.getElementById(`task${id}`).remove();
+      }
+      function cancelOrderPopup(task) {
+        var myModal = new bootstrap.Modal(
+          document.getElementById("confirmModal")
+        );
+        document.getElementById('cancelTaskValue').value = task
+        myModal.show();
+      }
       function addTaskToBoard(task) {
         var taskCard = document.createElement("div");
         taskCard.className = "task-card";
@@ -200,7 +259,11 @@
           task.img ?? `https://via.placeholder.com/200`
         }"><div style="flex:1;display:flex;justify-content: space-between;"><p style="margin-bottom: 4px">${
           task.title
-        }</br>โต๊ะ ${task.table}</p><p>จำนวน ${task.amount}</p></div></div></div>`;
+        }</br>โต๊ะ ${task.table}</p><div style="display:flex;"><p>จำนวน ${
+          task.amount
+        }</p><img onclick="cancelOrderPopup(${
+          task.id
+        })" id="cancelBtn" style="cursor: pointer;margin-top:5px;margin-left: 6px;width: 14px;height:14px;margin-right:6px; opacity: 0.4;" src="https://cdn-icons-png.flaticon.com/512/3405/3405244.png"></div></div></div></div>`;
 
         var columnId;
         switch (task.status) {
