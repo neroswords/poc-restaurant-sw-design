@@ -1,244 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All Orders</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
-      rel="stylesheet"
-    />
 
-    <style>
-      body {
-      }
-      .container {
-        max-width: 1200px;
-        margin-top: 50px;
-      }
-      .column {
-        border: 0px solid #dee2e6;
-        border-radius: 12px;
-        background-color: #ebebe9;
-        padding: 10px;
-        /* margin-right: 8px; */
-        min-height: 300px;
-      }
-      .column-header {
-        font-size: 16px;
-        margin-bottom: 8px;
-      }
-      .task-card {
-        margin-bottom: 8px;
-        padding: 10px;
-        background-color: #fff;
-        border-radius: 14px;
-        cursor: grab;
-      }
-    </style>
-  </head>
-  <body
-    style="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Orders</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    body {}
+
+    .container {
+      max-width: 1200px;
+      margin-top: 50px;
+    }
+
+    .column {
+      border: 0px solid #dee2e6;
+      border-radius: 12px;
+      background-color: #ebebe9;
+      padding: 10px;
+      /* margin-right: 8px; */
+      min-height: 300px;
+    }
+
+    .column-header {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .task-card {
+      margin-bottom: 8px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 14px;
+      cursor: grab;
+    }
+  </style>
+</head>
+
+<body style="
       color: #353535;
       background-color: #f5f5f5;
       font-family: 'Sarabun', sans-serif;
-    "
-  >
-    <div class="container">
-      <div
-        style="
-          border: #e9e9e9 1px;
-          border-bottom-style: solid;
-          margin-bottom: 18px;
-        "
-      >
-        <p style="font-size: 24px; font-weight: 300; margin-bottom: 15px">
-          รายการอาหาร
-        </p>
-      </div>
-      <div class="row">
-        <!-- To Do Column -->
-        <div class="col-md-4" style="padding-right: 0px">
-          <div
-            class="column"
-            ondrop="drop(event, 'todoTasks')"
-            ondragover="allowDrop(event)"
-          >
-            <h2 class="column-header">ยังไม่ได้ทำ</h2>
-            <div class="task-list" id="todoTasks"></div>
-          </div>
+    ">
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">ยืนยัน</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
-        <!-- In Progress Column -->
-        <div class="col-md-4" style="padding-right: 0px">
-          <div
-            class="column"
-            ondrop="drop(event, 'inProgressTasks')"
-            ondragover="allowDrop(event)"
-          >
-            <h2 class="column-header">กำลังทำ</h2>
-            <div class="task-list" id="inProgressTasks"></div>
-          </div>
+        <div class="modal-body">
+          <!-- Modal content goes here -->
+          ยืนยันการยกเลิกรายการอาหาร
+          <input style="display: none;" id="cancelTaskValue" value="" />
         </div>
-
-        <!-- Done Column -->
-        <div class="col-md-4">
-          <div
-            class="column"
-            ondrop="drop(event, 'doneTasks')"
-            ondragover="allowDrop(event)"
-          >
-            <h2 class="column-header">เสร็จสิ้น</h2>
-            <div class="task-list" id="doneTasks"></div>
-          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            ยกเลิก
+          </button>
+          <button style="
+                background-color: #ee8164;
+                border: 0px;
+                margin: 0;
+                margin-left: 8px;
+              " type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="onClickConfirmCancelOrder()">
+            ยืนยัน
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  <div class="container">
+    <div style="
+          border: #e9e9e9 1px;
+          border-bottom-style: solid;
+          margin-bottom: 18px;
+        ">
+      <p style="font-size: 24px; font-weight: 300; margin-bottom: 15px">
+        รายการอาหาร
+      </p>
+    </div>
+    <div class="row">
+      <!-- To Do Column -->
+      <div class="col-md-4" style="padding-right: 0px">
+        <div class="column" ondrop="drop(event, 'todoTasks')" ondragover="allowDrop(event)">
+          <h2 class="column-header">ยังไม่ได้ทำ</h2>
+          <div class="task-list" id="todoTasks"></div>
+        </div>
+      </div>
 
-    <script>
-      var tasks = [
-        {
-          id: 1,
-          title: "ก๋วยเตี๋ยวผัด",
-          table: 1,
-          amount: "1",
-          img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
-          status: "todo",
-        },
-        {
-          id: 2,
-          title: "ก๋วยเตี๋ยวผัด",
-          table: 5,
-          amount: "1",
-          img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
-          status: "todo",
-        },
-        {
-          id: 3,
-          title: "ก๋วยเตี๋ยวผัด",
-          table: 4,
-          amount: "1",
-          img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
-          status: "inProgress",
-        },
-        {
-          id: 4,
-          title: "กุ้งทอด",
-          table: 4,
-          amount: "1",
-          img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
-          status: "inProgress",
-        },
-        {
-          id: 5,
-          title: "กุ้งทอด",
-          table: 4,
-          amount: "2",
-          img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
-          status: "inProgress",
-        },
-        {
-          id: 6,
-          title: "หมูทอด",
-          table: 1,
-          amount: "1",
-          img: "https://poshjournal.com/wp-content/uploads/2020/05/tonkatsu-japanese-pork-cutlet-2.jpg",
-          status: "done",
-        },
-        {
-          id: 7,
-          title: "ก๋วยเตี๋ยวผัด",
-          table: 1,
-          amount: "1",
-          img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
-          status: "done",
-        },
-        {
-          id: 8,
-          title: "ก๋วยเตี๋ยวผัด",
-          table: 8,
-          amount: "2",
-          img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
-          status: "done",
-        },
-        {
-          id: 9,
-          title: "กุ้งทอด",
-          table: 8,
-          amount: "1",
-          img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
-          status: "done",
-        },
-      ];
+      <!-- In Progress Column -->
+      <div class="col-md-4" style="padding-right: 0px">
+        <div class="column" ondrop="drop(event, 'inProgressTasks')" ondragover="allowDrop(event)">
+          <h2 class="column-header">กำลังทำ</h2>
+          <div class="task-list" id="inProgressTasks"></div>
+        </div>
+      </div>
 
-      tasks.forEach(function (task) {
-        addTaskToBoard(task);
+      <!-- Done Column -->
+      <div class="col-md-4">
+        <div class="column" ondrop="drop(event, 'doneTasks')" ondragover="allowDrop(event)">
+          <h2 class="column-header">เสร็จสิ้น</h2>
+          <div class="task-list" id="doneTasks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var tasks = [
+      {
+        id: 1,
+        title: "ก๋วยเตี๋ยวผัด",
+        table: 1,
+        amount: "1",
+        img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
+        status: "todo",
+      },
+      {
+        id: 2,
+        title: "ก๋วยเตี๋ยวผัด",
+        table: 5,
+        amount: "1",
+        img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
+        status: "todo",
+      },
+      {
+        id: 3,
+        title: "ก๋วยเตี๋ยวผัด",
+        table: 4,
+        amount: "1",
+        img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
+        status: "inProgress",
+      },
+      {
+        id: 4,
+        title: "กุ้งทอด",
+        table: 4,
+        amount: "1",
+        img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
+        status: "inProgress",
+      },
+      {
+        id: 5,
+        title: "กุ้งทอด",
+        table: 4,
+        amount: "2",
+        img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
+        status: "inProgress",
+      },
+      {
+        id: 6,
+        title: "หมูทอด",
+        table: 1,
+        amount: "1",
+        img: "https://poshjournal.com/wp-content/uploads/2020/05/tonkatsu-japanese-pork-cutlet-2.jpg",
+        status: "done",
+      },
+      {
+        id: 7,
+        title: "ก๋วยเตี๋ยวผัด",
+        table: 1,
+        amount: "1",
+        img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
+        status: "done",
+      },
+      {
+        id: 8,
+        title: "ก๋วยเตี๋ยวผัด",
+        table: 8,
+        amount: "2",
+        img: "https://thecozycook.com/wp-content/uploads/2021/12/Ramen-Noodle-Stir-Fry-.jpg",
+        status: "done",
+      },
+      {
+        id: 9,
+        title: "กุ้งทอด",
+        table: 8,
+        amount: "1",
+        img: "https://khinskitchen.com/wp-content/uploads/2023/08/prawn-tempura-03.jpg",
+        status: "done",
+      },
+    ];
+
+    tasks.forEach(function (task) {
+      addTaskToBoard(task);
+    });
+    function onClickConfirmCancelOrder() {
+      const id = document.getElementById('cancelTaskValue').value
+      document.getElementById(`task${id}`).remove();
+    }
+    function cancelOrderPopup(task) {
+      var myModal = new bootstrap.Modal(
+        document.getElementById("confirmModal")
+      );
+      document.getElementById('cancelTaskValue').value = task
+      myModal.show();
+    }
+    function addTaskToBoard(task) {
+      var taskCard = document.createElement("div");
+      taskCard.className = "task-card";
+      taskCard.id = `task${task.id}`;
+      taskCard.setAttribute("draggable", "true");
+      taskCard.addEventListener("dragstart", function (event) {
+        event.dataTransfer.setData("text/plain", event.target.id);
       });
+      if (task.status == 'done') {
+        taskCard.innerHTML = `<div style="display:flex;"><img style="width: 45px;height:45px;border-radius: 12px;aspect-ratio: 1 / 1;object-fit: cover;margin-right:12px" src="${task.img ?? `https://via.placeholder.com/200`
+          }"><div style="flex:1;display:flex;justify-content: space-between;"><p style="margin-bottom: 4px">${task.title
+          }</br>โต๊ะ ${task.table}</p><p>จำนวน ${task.amount}</p></div></div></div>`;
+      } else {
+        taskCard.innerHTML = `<div style="display:flex;"><img style="width: 45px;height:45px;border-radius: 12px;aspect-ratio: 1 / 1;object-fit: cover;margin-right:12px" src="${task.img ?? `https://via.placeholder.com/200`
+          }"><div style="flex:1;display:flex;justify-content: space-between;"><p style="margin-bottom: 4px">${task.title
+          }</br>โต๊ะ ${task.table}</p><div style="display:flex;"><p>จำนวน ${task.amount
+          }</p><img onclick="cancelOrderPopup(${task.id
+          })" id="cancelBtn" style="cursor: pointer;margin-top:5px;margin-left: 6px;width: 14px;height:14px;margin-right:6px; opacity: 0.4;" src="https://cdn-icons-png.flaticon.com/512/3405/3405244.png"></div></div></div></div>`;
 
-      function addTaskToBoard(task) {
-        var taskCard = document.createElement("div");
-        taskCard.className = "task-card";
-        taskCard.id = `task${task.id}`;
-        taskCard.setAttribute("draggable", "true");
-        taskCard.addEventListener("dragstart", function (event) {
-          event.dataTransfer.setData("text/plain", event.target.id);
-        });
-        taskCard.innerHTML = `<div style="display:flex;"><img style="width: 45px;height:45px;border-radius: 12px;aspect-ratio: 1 / 1;object-fit: cover;margin-right:12px" src="${
-          task.img ?? `https://via.placeholder.com/200`
-        }"><div style="flex:1;display:flex;justify-content: space-between;"><p style="margin-bottom: 4px">${
-          task.title
-        }</br>โต๊ะ ${task.table}</p><p>จำนวน ${task.amount}</p></div></div></div>`;
-
-        var columnId;
-        switch (task.status) {
-          case "todo":
-            columnId = "todoTasks";
-            break;
-          case "inProgress":
-            columnId = "inProgressTasks";
-            break;
-          case "done":
-            columnId = "doneTasks";
-            break;
-          default:
-            columnId = "todoTasks";
-        }
-
-        document.getElementById(columnId).appendChild(taskCard);
       }
 
-      // var taskCards = document.querySelectorAll('.task-card');
-      // taskCards.forEach(function(taskCard) {
-      //     taskCard.setAttribute('draggable', 'true');
-      //     taskCard.addEventListener('dragstart', function(event) {
-      //         event.dataTransfer.setData("text/plain", event.target.id);
-      //     });
-      // });
-
-      function allowDrop(event) {
-        event.preventDefault();
+      var columnId;
+      switch (task.status) {
+        case "todo":
+          columnId = "todoTasks";
+          break;
+        case "inProgress":
+          columnId = "inProgressTasks";
+          break;
+        case "done":
+          columnId = "doneTasks";
+          break;
+        default:
+          columnId = "todoTasks";
       }
 
-      function drop(event, columnId) {
-        event.preventDefault();
-        var taskId = event.dataTransfer.getData("text/plain");
-        var taskElement = document.getElementById(taskId);
-        var column = document.getElementById(columnId);
-        column.appendChild(taskElement);
-      }
-    </script>
-  </body>
+      document.getElementById(columnId).appendChild(taskCard);
+    }
+
+    // var taskCards = document.querySelectorAll('.task-card');
+    // taskCards.forEach(function(taskCard) {
+    //     taskCard.setAttribute('draggable', 'true');
+    //     taskCard.addEventListener('dragstart', function(event) {
+    //         event.dataTransfer.setData("text/plain", event.target.id);
+    //     });
+    // });
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drop(event, columnId) {
+      event.preventDefault();
+      var taskId = event.dataTransfer.getData("text/plain");
+      var taskElement = document.getElementById(taskId);
+      var column = document.getElementById(columnId);
+      column.appendChild(taskElement);
+    }
+  </script>
+</body>
+
 </html>
