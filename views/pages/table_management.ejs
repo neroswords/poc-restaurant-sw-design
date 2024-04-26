@@ -39,7 +39,7 @@
 <body style='color: #353535; background-color: #F5F5F5;font-family: "Sarabun", sans-serif;'>
 
 <div class="container mt-5">
-    <div style="border: #E9E9E9 1px;  border-bottom-style: solid; margin-bottom: 25px;"><p style="font-size: 30px; font-weight: 300;margin-bottom: 15px;">ทานที่ร้าน</p></div>
+    <div style="border: #E9E9E9 1px;  border-bottom-style: solid; margin-bottom: 25px;"><p style="font-size: 24px; font-weight: 300;margin-bottom: 15px;">ทานที่ร้าน</p></div>
     <div class="row row-cols-1 row-cols-md-6 g-4">
         <% tables.forEach(function(table, idx) { %>
             <div class="col">
@@ -64,9 +64,11 @@
             <div style="flex:1;background-color: #F4F4F4; padding: 8px;">
                 <div style="background-color: #EBEBE9; border-radius: 13px; padding: 8px;">
                     <p>รายการอาหารทั้งหมด</p>
-            <div class="modal-body" style="padding: 0px">
-                <!-- Modal Content -->
-            </div></div></div>
+                    <div class="modal-body" style="padding: 0px">
+                    <!-- Modal Content -->
+                    </div>
+                </div>
+            </div>
             <div style="border: #EEEEEE 1px;background-color: #fff;border-top-style: solid;padding: 10px;"><p style="margin-bottom:4px;font-size: 20px;text-align: right;" id="totalPrice" ></p><p id="remark" style="text-align: right; margin-bottom: 4px; color: #808080;">* กดยืนยันเพื่อยืนยันการจ่ายเงินและปิดโต๊ะ</p></div>
             <div class="modal-footer">
                 <button style="border-color: #D9D9D9;margin:0;width: 30%;height: 45px;color: #696969;background: transparent;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
